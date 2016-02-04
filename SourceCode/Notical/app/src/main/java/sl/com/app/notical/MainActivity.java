@@ -19,12 +19,13 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BaseAction{
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private TextView tvInfo;
+    private BroadcastReceiver _messageBroadcastReceiver;
+    private TextView tvInfo, tvMsg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+        _messageBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String message = intent.getStringExtra("message");
+                tvMsg.setText(message);
+            }
+        };
         tvInfo = (TextView) findViewById(R.id.tvInfo);
+        tvMsg = (TextView) findViewById(R.id.tvMsg);
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -63,16 +72,25 @@ public class MainActivity extends AppCompatActivity {
             startService(intent);
         }
     }
+    public void setMsgContent(String text)
+    {
+        tvMsg.setText(text);
+    }
     @Override
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(_messageBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.MESSAGE_RECIEVED));
     }
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(_messageBroadcastReceiver);
         super.onPause();
     }
 
@@ -98,4 +116,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void setTvMsgText(String text) {
+        tvMsg.setText(text);
+    }
 }

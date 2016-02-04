@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -32,6 +33,12 @@ public class MyGcmListenerService extends GcmListenerService {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
+
+
+        Intent messageRecieved = new Intent(QuickstartPreferences.MESSAGE_RECIEVED);
+        messageRecieved.putExtra("message",message );
+        LocalBroadcastManager.getInstance(this).sendBroadcast(messageRecieved);
+
 
         if (from.startsWith("/topics/")) {
             // message received from some topic.

@@ -41,7 +41,6 @@ public class RegistrationIntentService extends IntentService {
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
-
             // TODO: Implement this method to send any registration to your app's servers.
             sendRegistrationToServer(token);
 
@@ -74,6 +73,9 @@ public class RegistrationIntentService extends IntentService {
      */
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
+//        TelephonyManager tMgr = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+//        String mPhoneNumber = tMgr.getLine1Number();
+//        Log.d(TAG, "mPhoneNumber " + mPhoneNumber);
     }
 
     /**
